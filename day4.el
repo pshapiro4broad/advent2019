@@ -15,8 +15,7 @@
                ;; not before
                (or (= i 0)
                    (not (= (elt pass i) (elt pass (1- i))))))
-       return t
-       finally return nil)))
+       return t)))
   (defun in-sequential-order (pass)
     (loop
      for i from 0 to (- (length pass) 2)
