@@ -18,17 +18,6 @@
          )
     (list inst op1 op2 op3)))
 
-(defun permutations (list)
-  "Return a list of all the permutations of the input."
-  (if list
-      (mapcan
-       (lambda (e)
-         (mapcar
-          (lambda (perm) (cons e perm))
-          (permutations (remove e list))))
-       list)
-    '(())))
-
 ;; an amplifier is
 ;; - a program
 ;; - a program counter
@@ -52,9 +41,10 @@
     (defun prog-set-output (raw-addr val mode)
 ;;      (print (concat "prog-set-output: " (prin1-to-string (list raw-addr val mode))))
       (let ((addr
-             (if (= mode 0)
-                 (prog-get raw-addr)
-               (+ (prog-get raw-addr) (prog-rel-base)))))
+             (+ (prog-get raw-addr)
+                (if (= mode 0)
+                    0
+                  (prog-rel-base)))))
         (puthash addr val program)))
     (defun prog-pc () (gethash 'pc amp))
     (defun prog-rel-base () (gethash 'rel-base amp))
