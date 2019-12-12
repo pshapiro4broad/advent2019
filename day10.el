@@ -1,6 +1,6 @@
 ;;; -*- lexical-binding: t -*-
 
-;; map is a list of asteriod coordinates
+;; a map is a list of asteroid coordinates
 (defun make-map (grid)
   (loop
    for line being the elements of grid using (index row)
@@ -141,7 +141,7 @@
    (+ (square (- (car pos1) (car pos2)))
       (square (- (cdr pos1) (cdr pos2))))))
 
-(defun laser-asteriods (grid)
+(defun laser-asteroids (grid)
   (let* ((result (find-best-center grid))
          (station (car result))
          (angle-and-points
@@ -179,5 +179,5 @@
        while (< (hash-table-count seen) 200)))
     last-removed))
 
-(laser-asteriods problem1)
+(laser-asteroids problem1)
 ;; => (16 . 23)

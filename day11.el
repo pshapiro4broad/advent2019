@@ -1,7 +1,7 @@
 ;;; -*- lexical-binding: t -*-
 
 
-;; a program in memory is a map of (blocation -> data)
+;; a program in memory is a map of (location -> data)
 (defun make-program (program-string)
   (let ((memory (make-hash-table))
         (data-list (mapcar 'string-to-number (split-string program-string ","))))
