@@ -55,34 +55,65 @@
                (apply '+ (mapcar 'abs (cdr moon)))))
           moons)))
 
-moon
-((-1 0 2) 0 0 0)
+(setq moon '((1 2 3) 4 5 6))
 
-(caar moon)
-
--1
-
-
-(-1 0 2)
-
+moons
 (((-1 0 2) 0 0 0) ((2 -10 -7) 0 0 0) ((4 -8 8) 0 0 0) ((3 5 -1) 0 0 0))
 
 
-(defun any-equal (m1 m2)
-  (and (= (caar m1) (caar m2)) (
+(0 0 0)
+
+
+(defun all-equal (s1 s2 i)
+  (and (= (elt (car (elt s1 0)) i) (elt (car (elt s2 0)) i))
+       (= (elt (cdr (elt s1 0)) i) (elt (cdr (elt s2 0)) i))
+       (= (elt (car (elt s1 1)) i) (elt (car (elt s2 1)) i))
+       (= (elt (cdr (elt s1 1)) i) (elt (cdr (elt s2 1)) i))
+       (= (elt (car (elt s1 2)) i) (elt (car (elt s2 2)) i))
+       (= (elt (cdr (elt s1 2)) i) (elt (cdr (elt s2 2)) i))
+       (= (elt (car (elt s1 3)) i) (elt (car (elt s2 3)) i))
+       (= (elt (cdr (elt s1 3)) i) (elt (cdr (elt s2 3)) i))))
+
+moons
+(((-1 0 2) 0 0 0) ((2 -10 -7) 0 0 0) ((4 -8 8) 0 0 0) ((3 5 -1) 0 0 0))
+
+(any-equal (car moons) (car moons))
+
+(defun any-system-equal (s1 s2)
+  (or
+   (all-equal s1 s2 0)
+   (all-equal s1 s2 1)
+   (all-equal s1 s2 2)))
 
 (defun loop-energy (system n)
-  (let ((initial system))
+  (let ((initial system)
+        (x-cycle)
+        (y-cycle)
+        (z-cycle))
     (loop
-     for i from 0 to n do
+     for i from 0 to n
+     until (and x-cycle y-cycle z-cycle) do
      (progn
        (if (= 0 (% i 1000))
            (print (list i (system-energy system) system)))
-       (if (equal system initial)
-           (print (list '****** i system)))
-       (setq system (step-system system))))))
+       (if (> i 0)
+           (progn
+             (if (and (not x-cycle)
+                      (all-equal initial system 0))
+                 (setq x-cycle i))
+             (if (and (not y-cycle)
+                      (all-equal initial system 1))
+                 (setq y-cycle i))
+             (if (and (not z-cycle)
+                      (all-equal initial system 2))
+                 (setq z-cycle i))))
+       (setq system (step-system system)))
+     finally return (list x-cycle y-cycle z-cycle))))
 
-(loop-energy moons 10)
+(loop-energy moons 100)
+
+(0 0 (((-1 0 2) 0 0 0) ((2 -10 -7) 0 0 0) ((4 -8 8) 0 0 0) ((3 5 -1) 0 0 0)))
+(18 28 44)
 
 (setq moons2
       (list (make-moon -8 -10 0)
@@ -90,7 +121,9 @@ moon
             (make-moon 2 -7 3)
             (make-moon 9 -8 -3)))
 
-(loop-energy moons2 100)
+(loop-energy problem1 10000)
+;; => (2028 5898 4702)
+
 
 ;; <x=5, y=13, z=-3>
 ;; <x=18, y=-7, z=13>
@@ -102,4 +135,9 @@ moon
             (make-moon 16 3 4)
             (make-moon 0 8 8)))
 
-(loop-energy moons 6000)
+(loop-energy problem1 1000000)
+;; => (186028 161428 144624)
+
+;; LCM is 271,442,326,847,376
+;; 271442326847376
+
